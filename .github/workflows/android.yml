@@ -2,7 +2,7 @@ name: Android CI Build
 
 on:
   push:
-    branches: [ "main" ] # Срабатывает при каждом пуше в ветку main
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -19,17 +19,21 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+
+    - name: List files before build (Debug)
+      run: ls -R
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleDebug --stacktrace
+
+    - name: Find APK location
+      run: find . -name "*.apk"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: DroidStrap-Debug
-        # Используем поиск по маске, чтобы точно найти файл
-        path: app/build/outputs/apk/debug/*.apk
+        path: "**/*.apk" # Ищет APK в любой подпапке
