@@ -1,4 +1,3 @@
-// Top-level build file
 buildscript {
     repositories {
         google()
@@ -9,14 +8,4 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
+// Больше здесь ничего не должно быть!
