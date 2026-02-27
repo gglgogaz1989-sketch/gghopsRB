@@ -1,30 +1,32 @@
-package com.droidstrap;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
+import java.io.File;
+import java.io.FileWriter;
 
 public class PatchEngine {
 
-    public void applyModifications(boolean dark, boolean fps) {
-        if (dark) {
-            enableDarkTheme();
-        }
-        if (fps) {
-            boostPerformance();
-        }
-    }
+    public void applyModToApk(String robloxApkPath, boolean fpsBoost) {
+        try {
+            File tempConfig = new File("ClientAppSettings.json");
+            
+            // 1. Создаем файл настроек
+            FileWriter writer = new FileWriter(tempConfig);
+            if (fpsBoost) {
+                writer.write("{\"DFIntTaskSchedulerTargetFps\": 120, \"FIntRenderForceTechnologyLevel\": 1}");
+            }
+            writer.close();
 
-    private void enableDarkTheme() {
-        // Код для подмены цветов. 
-        // В будущем здесь будет команда для замены файлов в assets/content/gui
-        System.out.println("DroidStrap: Тёмная тема активирована");
-    }
+            // 2. Используем Zip4j для добавления файла прямо в APK (как в архив)
+            ZipFile zipFile = new ZipFile(robloxApkPath);
+            ZipParameters parameters = new ZipParameters();
+            parameters.setRootFolderNameInZip("assets/ClientSettings/"); // Путь внутри APK
+            
+            zipFile.addFile(tempConfig, parameters);
+            
+            System.out.println("Модификация успешно вшита в APK!");
 
-    private void boostPerformance() {
-        // JSON-строка для файла ClientAppSettings.json
-        String fastFlags = "{" 
-            + "\"DFIntTaskSchedulerTargetFps\": 120,"
-            + "\"FIntRenderForceTechnologyLevel\": 1," // Тот самый одноцветный режим
-            + "\"FIntRenderShadowIntensity\": 0"
-            + "}";
-        System.out.println("DroidStrap: ФПС Буст применен: " + fastFlags);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
-
