@@ -31,4 +31,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: DroidStrap-Debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        # Используем поиск по маске, чтобы точно найти файл
+        path: app/build/outputs/apk/debug/*.apk
